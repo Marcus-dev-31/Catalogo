@@ -1,0 +1,55 @@
+:root {
+  /* Colores base */
+  --bg: #fff9f4;
+  --surface: #ffffff;
+  --border: rgba(26, 18, 11, 0.07);
+  --text: #1a120b;
+  --muted: #9b8470;
+  --accent: #ff4500;
+  --accent-2: #ff7843;
+  --wp: #25d366;
+
+  /* Gradientes de categoría (fondo de cards sin foto) */
+  --grad-ropa:       linear-gradient(145deg, #FFE4D6, #FFBC99);
+  --grad-juguetes:   linear-gradient(145deg, #FFF3CD, #FFD97D);
+  --grad-bijouterie: linear-gradient(145deg, #F3E5F5, #CE93D8);
+  --grad-regaleria:  linear-gradient(145deg, #FFD6E7, #FF8FAB);
+  --grad-bazar:      linear-gradient(145deg, #E0F7FA, #80DEEA);
+
+  /* Categorías */
+  --c-ropa: #ff4500;
+  --c-ropa-light: #ff7843;
+  --c-ropa-pale: #fff0eb;
+
+  --c-juguetes: #d49500;
+  --c-juguetes-light: #ffcc00;
+  --c-juguetes-pale: #fffbe6;
+
+  --c-bijou: #8b1fab;
+  --c-bijou-light: #c86dd8;
+  --c-bijou-pale: #f8f0fc;
+
+  --c-regaleria: #c81455;
+  --c-regaleria-light: #ef5b8e;
+  --c-regaleria-pale: #fff0f5;
+
+  --c-bazar: #006e7a;
+  --c-bazar-light: #3dbed0;
+  --c-bazar-pale: #f0fbfc;
+
+  /* Tipografía */
+  --f-display: "Syne", sans-serif;
+  --f-body: "Plus Jakarta Sans", sans-serif;
+
+  /* Border radius */
+  --r-sm: 10px;
+  --r-md: 18px;
+  --r-lg: 26px;
+  --r-xl: 34px;
+
+  /* Sombras */
+  --shadow-card:
+    0 2px 12px rgba(26, 18, 11, 0.07), 0 0 0 1px rgba(26, 18, 11, 0.04);
+  --shadow-lift:
+    0 8px 28px rgba(26, 18, 11, 0.11), 0 0 0 1px rgba(26, 18, 11, 0.04);
+}
