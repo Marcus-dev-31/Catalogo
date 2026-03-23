@@ -4,6 +4,7 @@ import Home from "./pages/Home/Home";
 import CategoryPage from "./pages/CategoryPage/CategoryPage";
 import ProductDetail from "./pages/ProductDetail/ProductDetail";
 import styles from "./App.module.css";
+import NotFound from "./pages/NotFound/NotFound";
 
 const pageVariants = {
   initial: { x: "100%", opacity: 0 },
@@ -31,6 +32,7 @@ function AnimatedRoutes() {
           <Route path="/" element={<Home />} />
           <Route path="/categoria/:slug" element={<CategoryPage />} />
           <Route path="/producto/:id" element={<ProductDetail />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </motion.div>
     </AnimatePresence>

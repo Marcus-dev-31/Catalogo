@@ -16,17 +16,20 @@ export default function ProductDetail() {
   if (!productSelected) return <div>Producto no encontrado</div>;
 
   return (
-     <div className={styles.page}>
+    <main className={styles.page}>
 
       {/* Hero */}
-      <div className={styles.hero}>
-        <button className={styles.backBtn} onClick={() => navigate(-1)}>
+      <section className={styles.hero}>
+        <button className={styles.backBtn} onClick={() => navigate(`/categoria/${category?.slug}`)}>
           <ChevronLeft size={18} strokeWidth={2.5} color="#1A120B" />
         </button>
         <img
           className={styles.photo}
           src={productSelected.image}
           alt={productSelected.name}
+          onError={(e) => {
+            e.currentTarget.src = '/placeholder.svg'
+          }}
         />
         <div className={styles.pricePill}>
           <span className={styles.pillCur}>$</span>
@@ -34,10 +37,10 @@ export default function ProductDetail() {
             {productSelected.price.toLocaleString("es-AR")}
           </span>
         </div>
-      </div>
+      </section>
 
       {/* Contenido */}
-      <div className={styles.content}>
+      <section className={styles.content}>
         {category && (
           <div
             className={styles.chip}
@@ -50,13 +53,13 @@ export default function ProductDetail() {
         <h1 className={styles.name}>{productSelected.name}</h1>
         <div className={styles.sep} />
         <p className={styles.desc}>{productSelected.description}</p>
-      </div>
+      </section>
 
       {/* CTA */}
-      <div className={styles.cta}>
+      <footer className={styles.cta}>
         <WhatsAppButton name={productSelected.name} price={productSelected.price} />
-      </div>
+      </footer>
 
-    </div>
+    </main>
   );
 }

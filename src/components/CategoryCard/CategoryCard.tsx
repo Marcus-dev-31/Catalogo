@@ -10,7 +10,7 @@ interface CategoryCardProps {
 
 const cardVariants = {
   initial: { opacity: 0, scale: 0.88 },
-  animate: { opacity: 1, scale: 1, transition: { duration: 0.35, ease: [0.34, 1.56, 0.64, 1] } },
+  animate: { opacity: 1, scale: 1, transition: { duration: 0.35, ease: [0.34, 1.56, 0.64, 1] as const } },
 };
 
 export const CategoryCard = ({ category, productCount }: CategoryCardProps) => {

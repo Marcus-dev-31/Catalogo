@@ -15,7 +15,7 @@
   justify-content: center;
   gap: 0.625rem;
   width: 100%;
-  padding: 1.0625rem 1.25rem;
+  padding: 1rem 1.25rem;
   border-radius: var(--r-lg);
   background: var(--wp);
   color: white;
@@ -34,7 +34,7 @@
 
 .btn:active {
   transform: scale(0.97);
-  box-shadow: 0 0.1875rem 0.75rem rgba(37, 211, 102, 0.22);
+  box-shadow: 0 0.2rem 0.75rem rgba(37, 211, 102, 0.22);
 }
 
 /* Shimmer sweep */
@@ -61,7 +61,7 @@
 .iconWrap::before {
   content: '';
   position: absolute;
-  inset: -0.4375rem;
+  inset: -0.5rem;
   border-radius: 50%;
   border: 0.125rem solid rgba(255, 255, 255, 0.45);
   animation: pulse-ring 2.4s ease-out infinite;

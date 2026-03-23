@@ -13,10 +13,17 @@ const container = {
 
 export const ProductGrid = ({ products }: ProductGridProps) => {
   return (
-    <motion.div className={styles.grid} variants={container} initial="initial" animate="animate">
+    <motion.ul
+      className={styles.grid}
+      variants={container}
+      initial="initial"
+      animate="animate"
+    >
       {products.map((p) => (
-        <ProductCard key={p.id} product={p} />
+        <li key={p.id}>
+          <ProductCard product={p} />
+        </li>
       ))}
-    </motion.div>
+    </motion.ul>
   );
 };

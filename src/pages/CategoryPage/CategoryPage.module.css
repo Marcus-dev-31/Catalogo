@@ -1,5 +1,5 @@
 .page {
-  max-width: 26.875rem;
+  max-width: 27rem;
   margin: 0 auto;
   min-height: 100dvh;
   background: var(--bg);
@@ -13,11 +13,11 @@
 .backBtn {
   display: inline-flex;
   align-items: center;
-  gap: 0.3125rem;
+  gap: 0.3rem;
   background: none;
   border: none;
   font-family: var(--f-body);
-  font-size: 0.8125rem;
+  font-size: 0.8rem;
   font-weight: 500;
   color: var(--muted);
   cursor: pointer;
@@ -46,7 +46,7 @@
 
 .title {
   font-family: var(--f-display);
-  font-size: 1.8125rem;
+  font-size: 1.75rem;
   font-weight: 800;
   color: var(--text);
   letter-spacing: -0.03125rem;

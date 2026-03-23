@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { SearchBar } from "../../components/SearchBar/SearchBar";
 import { CategoryGrid } from "../../components/CategoryGrid/CategoryGrid";
 import { categories } from "../../data/categories";
@@ -8,9 +8,18 @@ import styles from "./Home.module.css";
 
 export default function Home() {
   const [query, setQuery] = useState("");
+  const [debouncedQuery, setDebouncedQuery] = useState("");
+
+  useEffect(() => {
+  const timer = setTimeout(() => {
+    setDebouncedQuery(query)
+  }, 300)
+
+  return () => clearTimeout(timer)
+}, [query])
 
   const filteredProducts = products.filter((p) =>
-    p.name.toLowerCase().includes(query.toLowerCase()),
+    p.name.toLowerCase().includes(debouncedQuery.toLowerCase()),
   );
 
   return (
