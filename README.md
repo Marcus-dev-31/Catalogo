@@ -2,7 +2,7 @@
 
 Catálogo digital con contacto directo por WhatsApp. Pensado para negocios multirubro que quieren mostrar sus productos de forma simple y que el cliente consulte en un solo toque.
 
-🔗 **[Ver demo](https://tu-link-de-vercel.vercel.app)** ← reemplazá con el link real
+🔗 **[Ver demo](https://catalogo-whatsapp-tau.vercel.app/)** ← reemplazá con el link real
 
 ---
 
