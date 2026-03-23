@@ -10,11 +10,11 @@
   --wp: #25d366;
 
   /* Gradientes de categoría (fondo de cards sin foto) */
-  --grad-ropa:       linear-gradient(145deg, #FFE4D6, #FFBC99);
-  --grad-juguetes:   linear-gradient(145deg, #FFF3CD, #FFD97D);
-  --grad-bijouterie: linear-gradient(145deg, #F3E5F5, #CE93D8);
-  --grad-regaleria:  linear-gradient(145deg, #FFD6E7, #FF8FAB);
-  --grad-bazar:      linear-gradient(145deg, #E0F7FA, #80DEEA);
+  --grad-ropa: linear-gradient(145deg, #ffe4d6, #ffbc99);
+  --grad-juguetes: linear-gradient(145deg, #fff3cd, #ffd97d);
+  --grad-bijouterie: linear-gradient(145deg, #f3e5f5, #ce93d8);
+  --grad-regaleria: linear-gradient(145deg, #ffd6e7, #ff8fab);
+  --grad-bazar: linear-gradient(145deg, #e0f7fa, #80deea);
 
   /* Categorías */
   --c-ropa: #ff4500;
@@ -36,6 +36,10 @@
   --c-bazar: #006e7a;
   --c-bazar-light: #3dbed0;
   --c-bazar-pale: #f0fbfc;
+
+  --c-varios: #2d6a4f;
+  --c-varios-light: #52b788;
+  --c-varios-pale: #edfbf1;
 
   /* Tipografía */
   --f-display: "Syne", sans-serif;

@@ -1,0 +1,21 @@
+.appShell {
+  width: 100%;
+  max-width: 430px;
+  min-height: 100dvh;
+  margin: 0 auto;
+  background: var(--bg);
+  position: relative;
+}
+
+/* Fondo exterior — solo visible en pantallas > 430px */
+@media (min-width: 430px) {
+  :global(body) {
+    background: #D4CFC9;
+  }
+
+  .appShell {
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.08),
+                0 2rem 5rem rgba(0, 0, 0, 0.22);
+    min-height: 100dvh;
+  }
+}

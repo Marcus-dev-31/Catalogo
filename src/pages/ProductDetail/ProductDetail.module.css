@@ -1,0 +1,141 @@
+
+.page {
+  max-width: 26.875rem;
+  margin: 0 auto;
+  min-height: 100dvh;
+  background: var(--bg);
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Hero ─────────────────────────── */
+.hero {
+  width: 100%;
+  aspect-ratio: 1;
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 7.5rem;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.22), transparent);
+  z-index: 2;
+  pointer-events: none;
+}
+
+.backBtn {
+  position: absolute;
+  top: max(3.125rem, env(safe-area-inset-top, 3.125rem));
+  left: 1.125rem;
+  z-index: 10;
+  width: 2.625rem;
+  height: 2.625rem;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.90);
+  backdrop-filter: blur(1rem);
+  -webkit-backdrop-filter: blur(1rem);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0.125rem 1rem rgba(0, 0, 0, 0.14);
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.15s;
+}
+
+.backBtn:active {
+  transform: scale(0.86);
+}
+
+.photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.pricePill {
+  position: absolute;
+  bottom: 1rem;
+  right: 1rem;
+  z-index: 5;
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(0.75rem);
+  -webkit-backdrop-filter: blur(0.75rem);
+  border-radius: 6.25rem;
+  padding: 0.5rem 1.125rem;
+  box-shadow: 0 0.25rem 1.375rem rgba(0, 0, 0, 0.16);
+  display: flex;
+  align-items: baseline;
+  gap: 0.125rem;
+}
+
+.pillCur {
+  font-family: var(--f-display);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--accent);
+  align-self: flex-start;
+  margin-top: 0.25rem;
+}
+
+.pillAmt {
+  font-family: var(--f-display);
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--accent);
+  letter-spacing: -0.0625rem;
+  line-height: 1;
+}
+
+/* ── Contenido ────────────────────── */
+.content {
+  padding: 1.25rem 1.25rem 0;
+  flex: 1;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3125rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 6.25rem;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.025rem;
+  text-transform: uppercase;
+  margin-bottom: 0.75rem;
+}
+
+.name {
+  font-family: var(--f-display);
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -0.03125rem;
+  line-height: 1.15;
+  margin-bottom: 1.125rem;
+}
+
+.sep {
+  height: 0.0625rem;
+  background: linear-gradient(90deg, var(--border) 0%, transparent 75%);
+  margin-bottom: 1rem;
+}
+
+.desc {
+  font-size: 0.875rem;
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+/* ── CTA ──────────────────────────── */
+.cta {
+  padding: 1.75rem 1.25rem;
+  padding-bottom: max(2.25rem, env(safe-area-inset-bottom, 2.25rem));
+}

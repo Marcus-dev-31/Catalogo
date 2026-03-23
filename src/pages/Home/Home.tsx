@@ -1,0 +1,52 @@
+import { useState } from "react";
+import { SearchBar } from "../../components/SearchBar/SearchBar";
+import { CategoryGrid } from "../../components/CategoryGrid/CategoryGrid";
+import { categories } from "../../data/categories";
+import { products } from "../../data/products";
+import { ProductCard } from "../../components/ProductCard/ProductCard";
+import styles from "./Home.module.css";
+
+export default function Home() {
+  const [query, setQuery] = useState("");
+
+  const filteredProducts = products.filter((p) =>
+    p.name.toLowerCase().includes(query.toLowerCase()),
+  );
+
+  return (
+    <>
+      <header className={styles.header}>
+        <div className={styles.topbar}>
+          <div className={styles.logoGroup}>
+            <div className={styles.logoIcon}>🏪</div>
+            <div className={styles.logoText}>
+              <h1 className={styles.storeName}>Multitienda</h1>
+              <span className={styles.storeSub}>Todo en un lugar · Precio justo</span>
+            </div>
+          </div>
+          <div className={styles.liveBadge}>
+            <span className={styles.liveDot} />
+            <span className={styles.liveLabel}>En línea</span>
+          </div>
+        </div>
+        <SearchBar value={query} onChange={setQuery} />
+      </header>
+
+      <main>
+        {query ? (
+          <div className={styles.searchResults}>
+            {filteredProducts.length > 0
+              ? filteredProducts.map((p) => <ProductCard key={p.id} product={p} />)
+              : <p className={styles.noResults}>Sin resultados para "{query}"</p>
+            }
+          </div>
+        ) : (
+          <div>
+            <h2 className={styles.sectionLabel}>Explorá por categoría</h2>
+            <CategoryGrid categories={categories} products={products} />
+          </div>
+        )}
+      </main>
+    </>
+  );
+}

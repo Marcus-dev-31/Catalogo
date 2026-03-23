@@ -13,6 +13,7 @@ export interface Category {
     emoji: string;
     slug: string;
     color: string;
+    pale: string;
     gradient: string;
 }
 

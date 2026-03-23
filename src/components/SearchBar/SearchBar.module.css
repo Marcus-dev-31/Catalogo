@@ -1,0 +1,40 @@
+.wrapper {
+  position: relative;
+  margin: 1rem 1.25rem 0;
+}
+
+.icon {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--muted);
+  pointer-events: none;
+  display: flex;
+}
+
+.input {
+  width: 100%;
+  padding: 0.8125rem 1.125rem 0.8125rem 2.875rem;
+  border-radius: var(--r-xl);
+  border: 0.125rem solid transparent;
+  background: var(--surface);
+  font-family: var(--f-body);
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text);
+  outline: none;
+  box-shadow: var(--shadow-card);
+  -webkit-appearance: none;
+  appearance: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.input::placeholder {
+  color: var(--muted);
+}
+
+.input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 0.25rem rgba(255, 69, 0, 0.09), var(--shadow-card);
+}

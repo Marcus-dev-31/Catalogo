@@ -7,7 +7,8 @@ export const categories: Category[] = [
     emoji: "👗",
     slug: "ropa",
     color: "#FF4500",
-    gradient: "linear-gradient(145deg, #FFE4D6, #FFBC99)"
+    pale: "#FFF0EB",
+    gradient: "linear-gradient(145deg, #FF4500, #FF7843)"
   },
   {
     id: 2,
@@ -15,7 +16,8 @@ export const categories: Category[] = [
     emoji: "🧸",
     slug: "juguetes",
     color: "#D49500",
-    gradient: "linear-gradient(145deg,#FFF3CD,#FFD97D)"
+    pale: "#FFFBE6",
+    gradient: "linear-gradient(145deg, #D49500, #FFCC00)"
   },
   {
     id: 3,
@@ -23,7 +25,8 @@ export const categories: Category[] = [
     emoji: "💍",
     slug: "bijouterie",
     color: "#8B1FAB",
-    gradient: "linear-gradient(145deg,#F3E5F5,#CE93D8)"
+    pale: "#F8F0FC",
+    gradient: "linear-gradient(145deg, #8B1FAB, #C86DD8)"
   },
   {
     id: 4,
@@ -31,7 +34,8 @@ export const categories: Category[] = [
     emoji: "🎁",
     slug: "regaleria",
     color: "#C81455",
-    gradient: "linear-gradient(145deg,#FFD6E7,#FF8FAB)"
+    pale: "#FFF0F5",
+    gradient: "linear-gradient(145deg, #C81455, #EF5B8E)"
   },
   {
     id: 5,
@@ -39,7 +43,8 @@ export const categories: Category[] = [
     emoji: "🏠",
     slug: "bazar",
     color: "#006E7A",
-    gradient: "linear-gradient(145deg,#E0F7FA,#80DEEA)"
+    pale: "#F0FBFC",
+    gradient: "linear-gradient(145deg, #006E7A, #3DBED0)"
   },
   {
     id: 6,
@@ -47,6 +52,7 @@ export const categories: Category[] = [
     emoji: "🛍️",
     slug: "varios",
     color: "#006E7A",
-    gradient: "linear-gradient(145deg,#E0F7FA,#80DEEA)"
+    pale: "#EDFBF1",
+    gradient: "linear-gradient(145deg, #2D6A4F, #52B788)"
   }
 ];
