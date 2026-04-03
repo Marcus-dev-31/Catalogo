@@ -1,11 +1,30 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { products } from "../../data/products";
-import { categories } from "../../data/categories";
 import { WhatsAppButton } from "../../components/WhatsAppButton/WhatsAppButton";
 import { ChevronLeft } from "lucide-react";
 import styles from "./ProductDetail.module.css";
+import { useState, useEffect } from "react";
+import { getCategories, getProducts } from "../../services/api";
+import type { Category, Product } from "../../types";
 
 export default function ProductDetail() {
+
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+      async function fetchData() {
+        const [categoriesData, productsData] = await Promise.all([
+          getCategories(),
+          getProducts()
+        ])
+        setCategories(categoriesData);
+        setProducts(productsData);
+        setLoading(false);
+      }
+      fetchData()
+    }, [])
+
   const { id } = useParams();
   const productSelected = products.find((p) => p.id === Number(id));
 
@@ -13,6 +32,7 @@ export default function ProductDetail() {
 
   const category = categories.find((c) => c.id === productSelected?.categoryId);
 
+  if (loading) return <div>Cargando...</div>
   if (!productSelected) return <div>Producto no encontrado</div>;
 
   return (

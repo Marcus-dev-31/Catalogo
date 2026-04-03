@@ -1,11 +1,32 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { ChevronLeft } from "lucide-react";
-import { categories } from "../../data/categories";
-import { products } from "../../data/products";
 import { ProductGrid } from "../../components/ProductGrid/ProductGrid";
 import styles from "./CategoryPage.module.css";
+import { getCategories, getProducts } from "../../services/api";
+import { useState, useEffect } from "react";
+import type { Category, Product } from "../../types";
+
+
 
 export default function CategoryPage() {
+
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+  
+    useEffect(() => {
+      async function fetchData() {
+        const [categoriesData, productsData] = await Promise.all([
+          getCategories(),
+          getProducts()
+        ])
+        setCategories(categoriesData);
+        setProducts(productsData);
+        setLoading(false);
+      }
+      fetchData()
+    }, [])
+
   const { slug } = useParams();
   const category = categories.find((c) => c.slug === slug);
   const filteredProducts = products.filter(
@@ -14,6 +35,7 @@ export default function CategoryPage() {
 
   const navigate = useNavigate();
 
+  if (loading) return <div>Cargando...</div>
   if (!category) return <div>Categoria no encontrada</div>;
 
   return (
@@ -31,7 +53,9 @@ export default function CategoryPage() {
           <h1 className={styles.title}>{category.name}</h1>
         </div>
       </header>
-      <ProductGrid products={filteredProducts} />
+      <ProductGrid 
+        products={filteredProducts}
+      />
     </div>
   );
 }
