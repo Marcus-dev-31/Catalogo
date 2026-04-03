@@ -1,22 +1,39 @@
 import { useState, useEffect } from "react";
 import { SearchBar } from "../../components/SearchBar/SearchBar";
 import { CategoryGrid } from "../../components/CategoryGrid/CategoryGrid";
-import { categories } from "../../data/categories";
-import { products } from "../../data/products";
 import { ProductCard } from "../../components/ProductCard/ProductCard";
 import styles from "./Home.module.css";
+import { getCategories, getProducts } from "../../services/api";
+import type { Category, Product } from "../../types";
 
 export default function Home() {
   const [query, setQuery] = useState("");
   const [debouncedQuery, setDebouncedQuery] = useState("");
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-  const timer = setTimeout(() => {
-    setDebouncedQuery(query)
-  }, 300)
+    const timer = setTimeout(() => {
+      setDebouncedQuery(query)
+    }, 300)
+    return () => clearTimeout(timer)
+  }, [query])
 
-  return () => clearTimeout(timer)
-}, [query])
+  useEffect(() => {
+    async function fetchData() {
+      const [categoriesData, productsData] = await Promise.all([
+        getCategories(),
+        getProducts()
+      ])
+      setCategories(categoriesData);
+      setProducts(productsData);
+      setLoading(false);
+    }
+    fetchData()
+  }, [])
+
+  if (loading) return <div>Cargando...</div>
 
   const filteredProducts = products.filter((p) =>
     p.name.toLowerCase().includes(debouncedQuery.toLowerCase()),
