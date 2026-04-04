@@ -34,3 +34,15 @@ export async function getCategoryById(id: number): Promise<Category | null> {
   const categories: Category[] = await response.json()
   return categories.find(c => c.id === id) || null
 }
+
+export async function login(email: string, password: string): Promise<{ token: string }> {
+  const response = await fetch(`${API_URL}/api/auth/login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, password })
+  })
+  
+  if (!response.ok) throw new Error('Credenciales inválidas')
+  
+  return response.json()
+}

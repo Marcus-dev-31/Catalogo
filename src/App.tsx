@@ -5,6 +5,12 @@ import CategoryPage from "./pages/CategoryPage/CategoryPage";
 import ProductDetail from "./pages/ProductDetail/ProductDetail";
 import styles from "./App.module.css";
 import NotFound from "./pages/NotFound/NotFound";
+import AdminLayout from "./components/admin/AdminLayout/AdminLayout";
+import PrivateRoute from "./components/admin/PrivateRoute/PrivateRoute";
+import Login from "./pages/admin/Login";
+import Dashboard from "./pages/admin/Dashboard";
+import AdminProducts from "./pages/admin/AdminProducts";
+import AdminCategories from "./pages/admin/AdminCategories";
 
 const pageVariants = {
   initial: { x: "100%", opacity: 0 },
@@ -43,7 +49,22 @@ export default function App() {
   return (
     <div className={styles.appShell}>
       <BrowserRouter>
-        <AnimatedRoutes />
+        <Routes>
+          <Route path="/admin/login" element={<Login />} />
+          <Route
+            path="/admin"
+            element={
+              <PrivateRoute>
+                <AdminLayout />
+              </PrivateRoute>
+            }
+          >
+            <Route index element={<Dashboard />} />
+            <Route path="products" element={<AdminProducts />} />
+            <Route path="categories" element={<AdminCategories />} />
+          </Route>
+          <Route path="/*" element={<AnimatedRoutes />} />
+        </Routes>
       </BrowserRouter>
     </div>
   );
