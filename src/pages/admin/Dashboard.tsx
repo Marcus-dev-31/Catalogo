@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { useFetch } from "../../hooks/useApi";
 import { getProducts, getCategories } from "../../services/api";
-import { Plus, Tag, Link2, Package } from "lucide-react";
+import { Plus, Tag, Link2 } from "lucide-react";
 
 export default function Dashboard() {
   const { data: products } = useFetch(getProducts);

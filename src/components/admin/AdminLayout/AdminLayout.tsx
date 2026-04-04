@@ -17,7 +17,6 @@ export default function AdminLayout() {
         <Link to="/admin">Inicio</Link>
         <Link to="/admin/products">Productos</Link>
         <Link to="/admin/categories">Categorias</Link>
-        <Outlet />
       </nav>
     </div>
   );

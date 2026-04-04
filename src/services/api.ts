@@ -46,3 +46,72 @@ export async function login(email: string, password: string): Promise<{ token: s
   
   return response.json()
 }
+
+export async function createProduct(data: Omit<Product, 'id'>): Promise<Product> {
+  const token = localStorage.getItem('token')
+  const response = await fetch(`${API_URL}/api/products`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`
+    },
+    body: JSON.stringify(data)
+  })
+  return response.json()
+}
+
+export async function updateProduct(id: number, data: Omit<Product, 'id'>): Promise<Product> {
+  const token = localStorage.getItem('token')
+  const response = await fetch(`${API_URL}/api/products/${id}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`
+    },
+    body: JSON.stringify(data)
+  })
+  return response.json()
+}
+
+export async function deleteProduct(id: number): Promise<void> {
+  const token = localStorage.getItem('token')
+  await fetch(`${API_URL}/api/products/${id}`, {
+    method: 'DELETE',
+    headers: { Authorization: `Bearer ${token}` }
+  })
+}
+
+export async function createCategory(data: Omit<Category, 'id'>): Promise<Category> {
+  const token = localStorage.getItem('token')
+  const response = await fetch(`${API_URL}/api/categories`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`
+    },
+    body: JSON.stringify(data)
+  })
+  return response.json()
+}
+
+export async function updateCategory(slug: string, data: Omit<Category, 'id'>): Promise<Category> {
+  const token = localStorage.getItem('token')
+  const response = await fetch(`${API_URL}/api/categories/${slug}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`
+    },
+    body: JSON.stringify(data)
+  })
+  return response.json()
+}
+
+export async function deleteCategory(slug: string): Promise<void> {
+  const token = localStorage.getItem('token')
+  await fetch(`${API_URL}/api/categories/${slug}`, {
+    method: 'DELETE',
+    headers: { Authorization: `Bearer ${token}` }
+  })
+}
+

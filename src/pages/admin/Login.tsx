@@ -1,25 +1,24 @@
-import { useState } from "react"
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { login } from "../../services/api";
 
 export default function Login() {
-
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.SyntheticEvent) => {
-    e.preventDefault()
-    try{
+    e.preventDefault();
+    try {
       const { token } = await login(email, password);
-      localStorage.setItem('token', token);
-      navigate('/admin')
+      localStorage.setItem("token", token);
+      navigate("/admin");
     } catch {
-      setError('Email o contraseña incorrectos')
+      setError("Email o contraseña incorrectos");
     }
-  }
+  };
 
   return (
     <form onSubmit={handleSubmit}>
@@ -43,5 +42,5 @@ export default function Login() {
 
       <button type="submit">Ingresar</button>
     </form>
-  )
+  );
 }
