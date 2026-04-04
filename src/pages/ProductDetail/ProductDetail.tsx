@@ -2,45 +2,40 @@ import { useParams, useNavigate } from "react-router-dom";
 import { WhatsAppButton } from "../../components/WhatsAppButton/WhatsAppButton";
 import { ChevronLeft } from "lucide-react";
 import styles from "./ProductDetail.module.css";
-import { useState, useEffect } from "react";
 import { getCategories, getProducts } from "../../services/api";
 import type { Category, Product } from "../../types";
+import { useFetch } from "../../hooks/useApi";
 
 export default function ProductDetail() {
 
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-      async function fetchData() {
-        const [categoriesData, productsData] = await Promise.all([
-          getCategories(),
-          getProducts()
-        ])
-        setCategories(categoriesData);
-        setProducts(productsData);
-        setLoading(false);
-      }
-      fetchData()
-    }, [])
-
   const { id } = useParams();
-  const productSelected = products.find((p) => p.id === Number(id));
-
   const navigate = useNavigate();
+
+  const { data: categories, loading: loadingCategories } =
+    useFetch<Category[]>(getCategories);
+  const { data: products, loading: loadingProducts } =
+    useFetch<Product[]>(getProducts);
+
+  const loading = loadingCategories || loadingProducts;
+
+  if (loading) return <div>Cargando...</div>;
+  if (!categories || !products) return null;
+
+  const productSelected = products.find((p) => p.id === Number(id));
+  if (!productSelected) return <div>Producto no encontrado</div>
 
   const category = categories.find((c) => c.id === productSelected?.categoryId);
 
-  if (loading) return <div>Cargando...</div>
-  if (!productSelected) return <div>Producto no encontrado</div>;
-
+  
+ 
   return (
     <main className={styles.page}>
-
       {/* Hero */}
       <section className={styles.hero}>
-        <button className={styles.backBtn} onClick={() => navigate(`/categoria/${category?.slug}`)}>
+        <button
+          className={styles.backBtn}
+          onClick={() => navigate(`/categoria/${category?.slug}`)}
+        >
           <ChevronLeft size={18} strokeWidth={2.5} color="#1A120B" />
         </button>
         <img
@@ -48,7 +43,7 @@ export default function ProductDetail() {
           src={productSelected.image}
           alt={productSelected.name}
           onError={(e) => {
-            e.currentTarget.src = '/placeholder.svg'
+            e.currentTarget.src = "/placeholder.svg";
           }}
         />
         <div className={styles.pricePill}>
@@ -77,9 +72,11 @@ export default function ProductDetail() {
 
       {/* CTA */}
       <footer className={styles.cta}>
-        <WhatsAppButton name={productSelected.name} price={productSelected.price} />
+        <WhatsAppButton
+          name={productSelected.name}
+          price={productSelected.price}
+        />
       </footer>
-
     </main>
   );
 }

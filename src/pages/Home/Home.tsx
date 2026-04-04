@@ -5,35 +5,27 @@ import { ProductCard } from "../../components/ProductCard/ProductCard";
 import styles from "./Home.module.css";
 import { getCategories, getProducts } from "../../services/api";
 import type { Category, Product } from "../../types";
+import { useFetch } from "../../hooks/useApi";
 
 export default function Home() {
   const [query, setQuery] = useState("");
   const [debouncedQuery, setDebouncedQuery] = useState("");
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { data: categories, loading: loadingCategories } =
+    useFetch<Category[]>(getCategories);
+  const { data: products, loading: loadingProducts } =
+    useFetch<Product[]>(getProducts);
+
+  const loading = loadingCategories || loadingProducts;
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      setDebouncedQuery(query)
-    }, 300)
-    return () => clearTimeout(timer)
-  }, [query])
+      setDebouncedQuery(query);
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [query]);
 
-  useEffect(() => {
-    async function fetchData() {
-      const [categoriesData, productsData] = await Promise.all([
-        getCategories(),
-        getProducts()
-      ])
-      setCategories(categoriesData);
-      setProducts(productsData);
-      setLoading(false);
-    }
-    fetchData()
-  }, [])
-
-  if (loading) return <div>Cargando...</div>
+  if (loading) return <div>Cargando...</div>;
+  if (!categories || !products) return null;
 
   const filteredProducts = products.filter((p) =>
     p.name.toLowerCase().includes(debouncedQuery.toLowerCase()),
@@ -47,7 +39,9 @@ export default function Home() {
             <div className={styles.logoIcon}>🏪</div>
             <div className={styles.logoText}>
               <h1 className={styles.storeName}>Multitienda</h1>
-              <span className={styles.storeSub}>Todo en un lugar · Precio justo</span>
+              <span className={styles.storeSub}>
+                Todo en un lugar · Precio justo
+              </span>
             </div>
           </div>
           <div className={styles.liveBadge}>
@@ -61,10 +55,13 @@ export default function Home() {
       <main>
         {query ? (
           <div className={styles.searchResults}>
-            {filteredProducts.length > 0
-              ? filteredProducts.map((p) => <ProductCard key={p.id} product={p} />)
-              : <p className={styles.noResults}>Sin resultados para "{query}"</p>
-            }
+            {filteredProducts.length > 0 ? (
+              filteredProducts.map((p) => (
+                <ProductCard key={p.id} product={p} />
+              ))
+            ) : (
+              <p className={styles.noResults}>Sin resultados para "{query}"</p>
+            )}
           </div>
         ) : (
           <div>
