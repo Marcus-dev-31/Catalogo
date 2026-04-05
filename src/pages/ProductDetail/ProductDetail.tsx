@@ -45,7 +45,7 @@ export default function ProductDetail() {
         </button>
         <img
           className={styles.photo}
-          src={productSelected.image}
+          src={productSelected.images[0]?.url || '/placeholder.svg'}
           alt={productSelected.name}
           onError={(e) => {
             e.currentTarget.src = "/placeholder.svg";

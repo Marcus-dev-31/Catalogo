@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import type { Category, Product } from "../../../types";
+import { type ProductImage, type Category, type Product } from "../../../types";
 import { createProduct, updateProduct } from "../../../services/api";
 import styles from "./ProductModal.module.css";
 import { API_URL } from "../../../config";
@@ -22,13 +22,13 @@ export const ProductModal = ({
   onSave,
 }: ProductModalProps) => {
   const [name, setName] = useState("");
-  const [price, setPrice] = useState(0);
-  const [image, setImage] = useState("");
+  const [price, setPrice] = useState("");
+  const [images, setImages] = useState<ProductImage[]>([]);
   const [description, setDescription] = useState("");
   const [categoryId, setCategoryId] = useState(0);
   const [submitting, setSubmitting] = useState(false);
   const [correcting, setCorrecting] = useState(false);
-  const [imagePreview, setImagePreview] = useState("");
+  const [error, setError] = useState('');
 
   const handleCorrect = async () => {
     if (!description.trim()) return;
@@ -45,66 +45,95 @@ export const ProductModal = ({
       const data = await response.json();
       if (data.corrected) setDescription(data.corrected.trim());
     } catch (err) {
-      console.error("Error al corregir:", err);
+      
     } finally {
       setCorrecting(false);
     }
   };
 
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+    const files = Array.from(e.target.files || []);
+    if (!files.length) return;
 
-    setImagePreview(URL.createObjectURL(file));
+    const remainingSlots = 4 - images.length;
+    const filesToUpload = files.slice(0, remainingSlots);
 
-    const formData = new FormData();
-    formData.append("image", file);
+    for (const file of filesToUpload) {
+      const formData = new FormData();
+      formData.append("image", file);
 
-    const response = await fetch(`${API_URL}/api/upload`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-      body: formData,
-    });
+      const response = await fetch(`${API_URL}/api/upload`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        body: formData,
+      });
 
-    const data = await response.json();
-    if (data.url) setImage(data.url);
-  };
-
-  const handleSubmit = async (e: React.SyntheticEvent) => {
-    e.preventDefault();
-    setSubmitting(true);
-    try {
-      const data = { name, price, image, description, categoryId };
-      if (selectedProduct) {
-        await updateProduct(selectedProduct.id, data);
-      } else {
-        await createProduct(data);
+      const data = await response.json();
+      if (data.url) {
+        setImages((prev) => [
+          ...prev,
+          {
+            id: 0,
+            url: data.url,
+            order: prev.length,
+            productId: 0,
+          },
+        ]);
       }
-
-      onSave();
-      onClose();
-    } finally {
-      setSubmitting(false);
     }
   };
+  const handleSubmit = async (e: React.SyntheticEvent) => {
+  e.preventDefault()
+  setSubmitting(true)
+  setError('')
+  try {
+    const data = { name, price: Number(price), description, categoryId }
+
+    let productId: number
+
+    if (selectedProduct) {
+      const updated = await updateProduct(selectedProduct.id, data)
+      productId = updated.id
+    } else {
+      const created = await createProduct(data)
+      productId = created.id
+    }
+
+    for (const img of images) {
+      if (img.id === 0) {
+        await fetch(`${API_URL}/api/products/${productId}/images`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem('token')}`
+          },
+          body: JSON.stringify({ url: img.url, order: img.order })
+        })
+      }
+    }
+
+    onSave()
+    onClose()
+  } catch {
+    setError('Error al guardar el producto. Intentá de nuevo.')
+  } finally {
+    setSubmitting(false)
+  }
+}
 
   useEffect(() => {
     if (selectedProduct) {
       setName(selectedProduct.name);
-      setPrice(selectedProduct.price);
-      setImage(selectedProduct.image);
+      setPrice(selectedProduct.price.toString());
+      setImages(selectedProduct.images);
       setDescription(selectedProduct.description);
       setCategoryId(selectedProduct.categoryId);
-      setImagePreview('');
     } else {
       setName("");
-      setPrice(0);
-      setImage("");
+      setPrice('');
+      setImages([]);
       setDescription("");
       setCategoryId(0);
-      setImagePreview('');
     }
   }, [selectedProduct]);
 
@@ -167,7 +196,7 @@ export const ProductModal = ({
                     type="number"
                     placeholder="0"
                     value={price}
-                    onChange={(e) => setPrice(Number(e.target.value))}
+                    onChange={(e) => setPrice(e.target.value)}
                   />
                 </div>
                 <div className={styles.formGroup}>
@@ -191,31 +220,34 @@ export const ProductModal = ({
               </div>
 
               <div className={styles.formGroup}>
-  <label className={styles.label}>Imagen</label>
+  <label className={styles.label}>
+    Imágenes ({images.length}/4)
+  </label>
 
-  {imagePreview || image ? (
-    <div className={styles.previewWrap}>
-      <img
-        className={styles.previewImg}
-        src={imagePreview || image}
-        alt="preview"
-      />
-      <button
-        type="button"
-        className={styles.previewRemove}
-        onClick={() => {
-          setImagePreview('')
-          setImage('')
-        }}
-      >
-        ✕
-      </button>
+  {images.length > 0 && (
+    <div className={styles.imageGrid}>
+      {images.map((img, index) => (
+        <div key={index} className={styles.imageItem}>
+          <img src={img.url} alt="" className={styles.imageThumb} />
+          <button
+            type="button"
+            className={styles.previewRemove}
+            onClick={() => setImages(prev => prev.filter((_, i) => i !== index))}
+          >
+            ✕
+          </button>
+        </div>
+      ))}
     </div>
-  ) : (
+  )}
+
+  {images.length < 4 && (
     <label htmlFor="image" className={styles.uploadZone}>
       <span className={styles.uploadIcon}>🖼️</span>
-      <span className={styles.uploadText}>Tocá para subir una imagen</span>
-      <span className={styles.uploadSub}>JPG, PNG, WEBP</span>
+      <span className={styles.uploadText}>
+        {images.length === 0 ? 'Tocá para subir imágenes' : 'Agregar más imágenes'}
+      </span>
+      <span className={styles.uploadSub}>JPG, PNG, WEBP · Máximo 4</span>
     </label>
   )}
 
@@ -223,8 +255,9 @@ export const ProductModal = ({
     id="image"
     type="file"
     accept="image/*"
+    multiple
     onChange={handleImageChange}
-    style={{ display: 'none' }}
+    style={{ display: "none" }}
   />
 </div>
 
@@ -248,6 +281,8 @@ export const ProductModal = ({
                   {correcting ? "Corrigiendo..." : "✨ Corregir ortografía"}
                 </button>
               </div>
+
+              {error && <p className={styles.errorMsg}>{error}</p>}
 
               <div className={styles.actions}>
                 <button
@@ -273,6 +308,8 @@ export const ProductModal = ({
           </motion.div>
         </>
       )}
+
+      
     </AnimatePresence>,
     document.body,
   );

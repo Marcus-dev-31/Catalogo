@@ -63,6 +63,8 @@
   border-radius: 100px;
   background: linear-gradient(90deg, #ECFDF5, #D1FAE5);
   border: 0.0625rem solid rgba(37, 211, 102, 0.22);
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .liveDot {

@@ -24,7 +24,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
       <div className={styles.imgWrap}>
         <img
           className={styles.photo}
-          src={product.image}
+          src={product.images[0]?.url || '/placeholder.svg'}
           alt={product.name}
           onError={(e) => {
             e.currentTarget.src = '/placeholder.svg'

@@ -315,3 +315,31 @@
 .previewRemove:active {
   background: rgba(224, 49, 49, 0.8);
 }
+
+.imageGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.imageItem {
+  position: relative;
+}
+
+.imageThumb {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: var(--r-md);
+  display: block;
+  border: 1.5px solid var(--border);
+}
+
+.errorMsg {
+  font-size: 0.8rem;
+  color: var(--color-danger, #e03131);
+  text-align: center;
+  margin-bottom: 0.5rem;
+}
+
