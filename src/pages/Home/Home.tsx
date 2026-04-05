@@ -10,12 +10,13 @@ import { useFetch } from "../../hooks/useApi";
 export default function Home() {
   const [query, setQuery] = useState("");
   const [debouncedQuery, setDebouncedQuery] = useState("");
-  const { data: categories, loading: loadingCategories } =
+  const { data: categories, loading: loadingCategories, error: errorCategories } =
     useFetch<Category[]>(getCategories);
-  const { data: products, loading: loadingProducts } =
+  const { data: products, loading: loadingProducts, error: errorProducts } =
     useFetch<Product[]>(getProducts);
 
   const loading = loadingCategories || loadingProducts;
+  const error = errorCategories || errorProducts;
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -25,6 +26,7 @@ export default function Home() {
   }, [query]);
 
   if (loading) return <div>Cargando...</div>;
+  if (error) return <div>Error al cargar los datos</div>
   if (!categories || !products) return null;
 
   const filteredProducts = products.filter((p) =>
@@ -38,7 +40,7 @@ export default function Home() {
           <div className={styles.logoGroup}>
             <div className={styles.logoIcon}>🏪</div>
             <div className={styles.logoText}>
-              <h1 className={styles.storeName}>Multitienda</h1>
+              <h1 className={styles.storeName}>Un Poco De Todo</h1>
               <span className={styles.storeSub}>
                 Todo en un lugar · Precio justo
               </span>

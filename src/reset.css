@@ -1,3 +1,10 @@
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+  width: 100%;
+}
+
 /* ── Box Model ── */
 *,
 *::before,
@@ -20,6 +27,8 @@ html {
 body {
   min-height: 100dvh;
   line-height: 1.5;
+  display: flex;
+  justify-content: center;
 }
 
 /* ── Typography ── */

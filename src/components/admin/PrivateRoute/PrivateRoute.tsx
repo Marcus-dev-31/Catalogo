@@ -1,9 +1,21 @@
 import { Navigate } from "react-router-dom";
 
+function isTokenValid(token: string): boolean {
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1]))
+    return payload.exp * 1000 > Date.now()
+  } catch {
+    return false
+  }
+}
+
 export default function PrivateRoute({ children }: { children: React.ReactNode }) {
   const token = localStorage.getItem('token');
 
-  if (!token) return <Navigate to="/admin/login" />
+  if (!token || !isTokenValid(token)) {
+    localStorage.removeItem('token')
+    return <Navigate to="/admin/login" />
+  } 
 
   return children;
 }

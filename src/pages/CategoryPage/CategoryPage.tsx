@@ -7,17 +7,24 @@ import type { Category, Product } from "../../types";
 import { useFetch } from "../../hooks/useApi";
 
 export default function CategoryPage() {
-  const { data: categories, loading: loadingCategories } =
-    useFetch<Category[]>(getCategories);
-  const { data: products, loading: loadingProducts } =
-    useFetch<Product[]>(getProducts);
+  const {
+    data: categories,
+    loading: loadingCategories,
+    error: errorCategories,
+  } = useFetch<Category[]>(getCategories);
+  const {
+    data: products,
+    loading: loadingProducts,
+    error: errorProducts,
+  } = useFetch<Product[]>(getProducts);
 
   const loading = loadingCategories || loadingProducts;
-
+  const error = errorCategories || errorProducts;
   const { slug } = useParams();
   const navigate = useNavigate();
 
   if (loading) return <div>Cargando...</div>;
+  if (error) return <div>Error al cargar los datos</div>;
   if (!categories || !products) return null;
 
   const category = categories.find((c) => c.slug === slug);

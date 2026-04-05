@@ -1,6 +1,9 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
+import { motion, AnimatePresence } from "framer-motion";
 import type { Category, Product } from "../../../types";
 import { createProduct, updateProduct } from "../../../services/api";
+import styles from "./ProductModal.module.css";
 
 interface ProductModalProps {
   isOpen: boolean;
@@ -10,97 +13,198 @@ interface ProductModalProps {
   onSave: () => void;
 }
 
-export const ProductModal = ({ isOpen, selectedProduct, categories, onClose, onSave }: ProductModalProps) => {
+export const ProductModal = ({
+  isOpen,
+  selectedProduct,
+  categories,
+  onClose,
+  onSave,
+}: ProductModalProps) => {
   const [name, setName] = useState("");
   const [price, setPrice] = useState(0);
   const [image, setImage] = useState("");
   const [description, setDescription] = useState("");
   const [categoryId, setCategoryId] = useState(0);
+  const [submitting, setSubmitting] = useState(false);
+  const [correcting, setCorrecting] = useState(false);
 
+  
   const handleSubmit = async (e: React.SyntheticEvent) => {
     e.preventDefault();
+    setSubmitting(true);
+    try {
+      const data = { name, price, image, description, categoryId };
+      if (selectedProduct) {
+        await updateProduct(selectedProduct.id, data);
+      } else {
+        await createProduct(data);
+      }
 
-    const data = { name, price, image, description, categoryId }
-
-    if (selectedProduct) {
-        await updateProduct(selectedProduct.id, data)
-    } else {
-        await createProduct(data)
+      onSave();
+      onClose();
+    } finally {
+      setSubmitting(false);
     }
-
-    onSave();
-    onClose();
-  }
+  };
 
   useEffect(() => {
-  if (selectedProduct) {
-    setName(selectedProduct.name)
-    setPrice(selectedProduct.price)
-    setImage(selectedProduct.image)
-    setDescription(selectedProduct.description)
-    setCategoryId(selectedProduct.categoryId)
-  } else {
-    setName('')
-    setPrice(0)
-    setImage('')
-    setDescription('')
-    setCategoryId(0)
-  }
-}, [selectedProduct])
+    if (selectedProduct) {
+      setName(selectedProduct.name);
+      setPrice(selectedProduct.price);
+      setImage(selectedProduct.image);
+      setDescription(selectedProduct.description);
+      setCategoryId(selectedProduct.categoryId);
+    } else {
+      setName("");
+      setPrice(0);
+      setImage("");
+      setDescription("");
+      setCategoryId(0);
+    }
+  }, [selectedProduct]);
 
-  if (!isOpen) return null;
+  return createPortal(
+    <AnimatePresence>
+      {isOpen && (
+        <>
+          {/* Overlay */}
+          <motion.div
+            className={styles.overlay}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.28 }}
+            onClick={onClose}
+          />
 
-  return (
-    <div>
-      <form onSubmit={handleSubmit}>
-        <label htmlFor="name">Nombre</label>
-        <input
-          id="name"
-          type="text"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
+          {/* Sheet */}
+          <motion.div
+            className={styles.sheet}
+            initial={{ y: "100%" }}
+            animate={{ y: 0 }}
+            exit={{ y: "100%" }}
+            transition={{ type: "spring", damping: 28, stiffness: 320 }}
+          >
+            <div className={styles.handle} />
 
-        <label htmlFor="price">Precio</label>
-        <input
-          id="price"
-          type="number"
-          value={price}
-          onChange={(e) => setPrice(Number(e.target.value))}
-        />
+            <div className={styles.head}>
+              <h2 className={styles.title}>
+                {selectedProduct ? "Editar producto" : "Agregar producto"}
+              </h2>
+              <button className={styles.closeBtn} onClick={onClose}>
+                ✕
+              </button>
+            </div>
 
-        <label htmlFor="image">Imagen (URL)</label>
-        <input
-          id="image"
-          type="url"
-          value={image}
-          onChange={(e) => setImage(e.target.value)}
-        />
+            <form className={styles.form} onSubmit={handleSubmit}>
+              <div className={styles.formGroup}>
+                <label className={styles.label} htmlFor="name">
+                  Nombre
+                </label>
+                <input
+                  className={styles.input}
+                  id="name"
+                  type="text"
+                  placeholder="Ej: Remera oversize estampada"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                />
+              </div>
 
-        <label htmlFor="description">Descripción</label>
-        <textarea
-          id="description"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-        />
+              <div className={styles.formRow}>
+                <div className={styles.formGroup}>
+                  <label className={styles.label} htmlFor="price">
+                    Precio
+                  </label>
+                  <input
+                    className={styles.input}
+                    id="price"
+                    type="number"
+                    placeholder="0"
+                    value={price}
+                    onChange={(e) => setPrice(Number(e.target.value))}
+                  />
+                </div>
+                <div className={styles.formGroup}>
+                  <label className={styles.label} htmlFor="category">
+                    Categoría
+                  </label>
+                  <select
+                    className={styles.select}
+                    id="category"
+                    value={categoryId}
+                    onChange={(e) => setCategoryId(Number(e.target.value))}
+                  >
+                    <option value="">Seleccionar</option>
+                    {categories.map((c) => (
+                      <option key={c.id} value={c.id}>
+                        {c.emoji} {c.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
 
-        <label htmlFor="category">Categoría</label>
-        <select
-          id="category"
-          value={categoryId}
-          onChange={(e) => setCategoryId(Number(e.target.value))}
-        >
-          <option value="">Seleccionar categoría</option>
-          {categories.map((c) => (
-            <option key={c.id} value={c.id}>
-              {c.emoji} {c.name}
-            </option>
-          ))}
-        </select>
+              <div className={styles.formGroup}>
+                <label className={styles.label} htmlFor="image">
+                  URL de imagen
+                </label>
+                <input
+                  className={styles.input}
+                  id="image"
+                  type="url"
+                  placeholder="https://..."
+                  value={image}
+                  onChange={(e) => setImage(e.target.value)}
+                />
+              </div>
 
-        <button type="button" onClick={onClose}>Cancelar</button>
-        <button type="submit">Guardar</button>
-      </form>
-    </div>
+              <div className={styles.formGroup}>
+                <label className={styles.label} htmlFor="description">
+                  Descripción
+                </label>
+                <textarea
+                  className={styles.textarea}
+                  id="description"
+                  placeholder="Descripción del producto..."
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                />
+                <button
+                  type="button"
+                  className={styles.btnCorrect}
+                  onClick={handleCorrect}
+                  disabled={correcting || !description.trim()}
+                >
+                  {correcting ? "Corrigiendo..." : "✨ Corregir ortografía"}
+                </button>
+              </div>
+
+              <div className={styles.actions}>
+                <button
+                  className={styles.btnSave}
+                  type="submit"
+                  disabled={submitting}
+                >
+                  {submitting
+                    ? "Guardando..."
+                    : selectedProduct
+                      ? "Guardar cambios"
+                      : "Agregar producto"}
+                </button>
+                <button
+                  className={styles.btnCancel}
+                  type="button"
+                  onClick={onClose}
+                >
+                  Cancelar
+                </button>
+              </div>
+            </form>
+          </motion.div>
+        </>
+      )}
+    </AnimatePresence>,
+    document.body,
   );
 };

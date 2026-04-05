@@ -7,27 +7,32 @@ import type { Category, Product } from "../../types";
 import { useFetch } from "../../hooks/useApi";
 
 export default function ProductDetail() {
-
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const { data: categories, loading: loadingCategories } =
-    useFetch<Category[]>(getCategories);
-  const { data: products, loading: loadingProducts } =
-    useFetch<Product[]>(getProducts);
+  const {
+    data: categories,
+    loading: loadingCategories,
+    error: errorCategories,
+  } = useFetch<Category[]>(getCategories);
+  const {
+    data: products,
+    loading: loadingProducts,
+    error: errorProducts,
+  } = useFetch<Product[]>(getProducts);
 
   const loading = loadingCategories || loadingProducts;
+  const error = errorCategories || errorProducts;
 
   if (loading) return <div>Cargando...</div>;
+  if (error) return <div>Error al cargar los datos</div>;
   if (!categories || !products) return null;
 
   const productSelected = products.find((p) => p.id === Number(id));
-  if (!productSelected) return <div>Producto no encontrado</div>
+  if (!productSelected) return <div>Producto no encontrado</div>;
 
   const category = categories.find((c) => c.id === productSelected?.categoryId);
 
-  
- 
   return (
     <main className={styles.page}>
       {/* Hero */}

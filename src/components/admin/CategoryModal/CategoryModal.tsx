@@ -1,6 +1,9 @@
 import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
+import { motion, AnimatePresence } from "framer-motion";
 import type { Category } from "../../../types";
 import { createCategory, updateCategory } from "../../../services/api";
+import styles from "./CategoryModal.module.css";
 
 interface CategoryModalProps {
   isOpen: boolean;
@@ -18,24 +21,27 @@ export const CategoryModal = ({
   const [name, setName] = useState("");
   const [emoji, setEmoji] = useState("");
   const [slug, setSlug] = useState("");
-  const [color, setColor] = useState("");
-  const [pale, setPale] = useState("");
+  const [color, setColor] = useState("#FF4500");
+  const [pale, setPale] = useState("#FFF0EB");
   const [gradient, setGradient] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.SyntheticEvent) => {
-    e.preventDefault();
-
-    const data = { name, emoji, slug, color, pale, gradient };
-
+  e.preventDefault()
+  setSubmitting(true)
+  try {
+    const data = { name, emoji, slug, color, pale, gradient }
     if (selectedCategory) {
-      await updateCategory(selectedCategory.slug, data);
+      await updateCategory(selectedCategory.slug, data)
     } else {
-      await createCategory(data);
+      await createCategory(data)
     }
-
-    onSave();
-    onClose();
-  };
+    onSave()
+    onClose()
+  } finally {
+    setSubmitting(false)
+  }
+}
 
   useEffect(() => {
     if (selectedCategory) {
@@ -49,74 +55,170 @@ export const CategoryModal = ({
       setName("");
       setEmoji("");
       setSlug("");
-      setColor("");
-      setPale("");
-      setGradient("");
+      setColor("#FF4500");
+      setPale("#FFF0EB");
+      setGradient("linear-gradient(145deg, #FF4500, #FF7843)");
     }
   }, [selectedCategory]);
 
-  if (!isOpen) return null;
+  const handleColorChange = (value: string) => {
+    setColor(value);
+    setGradient(`linear-gradient(145deg, ${value}, ${value}CC)`);
+  };
 
-  return (
-    <div>
-      <form onSubmit={handleSubmit}>
-        <label htmlFor="name">Nombre</label>
-        <input
-          id="name"
-          type="text"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
+  return createPortal(
+    <AnimatePresence>
+      {isOpen && (
+        <>
+          <motion.div
+            className={styles.overlay}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.28 }}
+            onClick={onClose}
+          />
 
-        <label htmlFor="emoji">Emoji</label>
-        <input
-          id="emoji"
-          type="text"
-          value={emoji}
-          onChange={(e) => setEmoji(e.target.value)}
-        />
+          <motion.div
+            className={styles.sheet}
+            initial={{ y: "100%" }}
+            animate={{ y: 0 }}
+            exit={{ y: "100%" }}
+            transition={{ type: "spring", damping: 28, stiffness: 320 }}
+          >
+            <div className={styles.handle} />
 
-        <label htmlFor="text">slug</label>
-        <input
-          id="slug"
-          type="text"
-          value={slug}
-          onChange={(e) => setSlug(e.target.value)}
-        />
+            <div className={styles.head}>
+              <h2 className={styles.title}>
+                {selectedCategory ? "Editar categoría" : "Agregar categoría"}
+              </h2>
+              <button className={styles.closeBtn} onClick={onClose}>
+                ✕
+              </button>
+            </div>
 
-        <label htmlFor="color">Color Principal</label>
-        <input
-          id="color"
-          type="color"
-          value={color}
-          onChange={(e) => {
-            setColor(e.target.value);
-            setGradient(
-              `linear-gradient(145deg, ${e.target.value}CC, ${e.target.value}88)`,
-            );
-          }}
-        />
+            <form className={styles.form} onSubmit={handleSubmit}>
+              <div className={styles.formRow}>
+                <div className={styles.formGroup}>
+                  <label className={styles.label} htmlFor="name">
+                    Nombre
+                  </label>
+                  <input
+                    className={styles.input}
+                    id="name"
+                    type="text"
+                    placeholder="Ej: Ropa"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                  />
+                </div>
+                <div className={styles.formGroup}>
+                  <label className={styles.label} htmlFor="emoji">
+                    Emoji
+                  </label>
+                  <input
+                    className={styles.input}
+                    id="emoji"
+                    type="text"
+                    placeholder="👗"
+                    value={emoji}
+                    onChange={(e) => setEmoji(e.target.value)}
+                  />
+                </div>
+              </div>
 
-        <label htmlFor="pale">Color Pale</label>
-        <input
-          id="pale"
-          type="color"
-          value={pale}
-          onChange={(e) => setPale(e.target.value)}
-        />
+              <div className={styles.formGroup}>
+                <label className={styles.label} htmlFor="slug">
+                  Slug
+                </label>
+                <input
+                  className={styles.input}
+                  id="slug"
+                  type="text"
+                  placeholder="ropa"
+                  value={slug}
+                  onChange={(e) => setSlug(e.target.value)}
+                />
+              </div>
 
-        <label htmlFor="gradiente">Gradiente</label>
-        <input
-          type="text"
-          value={gradient}
-          readOnly
-        />
+              <div className={styles.formRow}>
+                <div className={styles.formGroup}>
+                  <label className={styles.label} htmlFor="color">
+                    Color principal
+                  </label>
+                  <div className={styles.colorRow}>
+                    <input
+                      className={styles.colorSwatch}
+                      id="color"
+                      type="color"
+                      value={color}
+                      onChange={(e) => handleColorChange(e.target.value)}
+                    />
+                    <input
+                      className={styles.input}
+                      type="text"
+                      value={color}
+                      onChange={(e) => handleColorChange(e.target.value)}
+                    />
+                  </div>
+                </div>
+                <div className={styles.formGroup}>
+                  <label className={styles.label} htmlFor="pale">
+                    Color pale
+                  </label>
+                  <div className={styles.colorRow}>
+                    <input
+                      className={styles.colorSwatch}
+                      id="pale"
+                      type="color"
+                      value={pale}
+                      onChange={(e) => setPale(e.target.value)}
+                    />
+                    <input
+                      className={styles.input}
+                      type="text"
+                      value={pale}
+                      onChange={(e) => setPale(e.target.value)}
+                    />
+                  </div>
+                </div>
+              </div>
 
-        <button type="button" onClick={onClose}>
-          Cancelar
-        </button>
-        <button type="submit">Guardar</button>
-      </form>
-    </div>
+              <div className={styles.formGroup}>
+                <label className={styles.label}>Gradiente</label>
+                <div
+                  className={styles.gradientPreview}
+                  style={{ background: gradient }}
+                />
+                <input
+                  className={styles.input}
+                  type="text"
+                  value={gradient}
+                  readOnly
+                />
+              </div>
+
+              <div className={styles.actions}>
+                <button 
+                  className={styles.btnSave} 
+                  type="submit"
+                  disabled={submitting}
+                >
+                  {submitting ? 'Guardando...' : selectedCategory ? 'Guardar cambios' : 'Agregar categoría'}
+                </button>
+                <button
+                  className={styles.btnCancel}
+                  type="button"
+                  onClick={onClose}
+                >
+                  Cancelar
+                </button>
+              </div>
+            </form>
+          </motion.div>
+        </>
+      )}
+    </AnimatePresence>,
+    document.body,
   );
 };

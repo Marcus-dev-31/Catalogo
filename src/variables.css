@@ -41,6 +41,12 @@
   --c-varios-light: #52b788;
   --c-varios-pale: #edfbf1;
 
+  /* Semánticos */
+  --accent-pale:  #fff0eb;
+  --success-pale: #ebfbee;
+  --danger:       #e03131;
+  --danger-pale:  #fff5f5;
+
   /* Tipografía */
   --f-display: "Syne", sans-serif;
   --f-body: "Plus Jakarta Sans", sans-serif;

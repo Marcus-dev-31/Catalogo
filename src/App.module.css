@@ -5,6 +5,8 @@
   margin: 0 auto;
   background: var(--bg);
   position: relative;
+  display: flex;
+  flex-direction: column;
 }
 
 /* Fondo exterior — solo visible en pantallas > 430px */
