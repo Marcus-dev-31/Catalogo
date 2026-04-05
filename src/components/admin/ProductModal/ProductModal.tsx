@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import type { Category, Product } from "../../../types";
 import { createProduct, updateProduct } from "../../../services/api";
 import styles from "./ProductModal.module.css";
+import { API_URL } from "../../../config";
 
 interface ProductModalProps {
   isOpen: boolean;
@@ -27,8 +28,50 @@ export const ProductModal = ({
   const [categoryId, setCategoryId] = useState(0);
   const [submitting, setSubmitting] = useState(false);
   const [correcting, setCorrecting] = useState(false);
+  const [imagePreview, setImagePreview] = useState("");
 
-  
+  const handleCorrect = async () => {
+    if (!description.trim()) return;
+    setCorrecting(true);
+    try {
+      const response = await fetch(`${API_URL}/api/ai/correct-description`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify({ description }),
+      });
+      const data = await response.json();
+      if (data.corrected) setDescription(data.corrected.trim());
+    } catch (err) {
+      console.error("Error al corregir:", err);
+    } finally {
+      setCorrecting(false);
+    }
+  };
+
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setImagePreview(URL.createObjectURL(file));
+
+    const formData = new FormData();
+    formData.append("image", file);
+
+    const response = await fetch(`${API_URL}/api/upload`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+      body: formData,
+    });
+
+    const data = await response.json();
+    if (data.url) setImage(data.url);
+  };
+
   const handleSubmit = async (e: React.SyntheticEvent) => {
     e.preventDefault();
     setSubmitting(true);
@@ -54,12 +97,14 @@ export const ProductModal = ({
       setImage(selectedProduct.image);
       setDescription(selectedProduct.description);
       setCategoryId(selectedProduct.categoryId);
+      setImagePreview('');
     } else {
       setName("");
       setPrice(0);
       setImage("");
       setDescription("");
       setCategoryId(0);
+      setImagePreview('');
     }
   }, [selectedProduct]);
 
@@ -146,18 +191,42 @@ export const ProductModal = ({
               </div>
 
               <div className={styles.formGroup}>
-                <label className={styles.label} htmlFor="image">
-                  URL de imagen
-                </label>
-                <input
-                  className={styles.input}
-                  id="image"
-                  type="url"
-                  placeholder="https://..."
-                  value={image}
-                  onChange={(e) => setImage(e.target.value)}
-                />
-              </div>
+  <label className={styles.label}>Imagen</label>
+
+  {imagePreview || image ? (
+    <div className={styles.previewWrap}>
+      <img
+        className={styles.previewImg}
+        src={imagePreview || image}
+        alt="preview"
+      />
+      <button
+        type="button"
+        className={styles.previewRemove}
+        onClick={() => {
+          setImagePreview('')
+          setImage('')
+        }}
+      >
+        ✕
+      </button>
+    </div>
+  ) : (
+    <label htmlFor="image" className={styles.uploadZone}>
+      <span className={styles.uploadIcon}>🖼️</span>
+      <span className={styles.uploadText}>Tocá para subir una imagen</span>
+      <span className={styles.uploadSub}>JPG, PNG, WEBP</span>
+    </label>
+  )}
+
+  <input
+    id="image"
+    type="file"
+    accept="image/*"
+    onChange={handleImageChange}
+    style={{ display: 'none' }}
+  />
+</div>
 
               <div className={styles.formGroup}>
                 <label className={styles.label} htmlFor="description">
