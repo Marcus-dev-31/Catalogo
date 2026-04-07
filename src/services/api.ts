@@ -46,7 +46,10 @@ export async function login(email: string, password: string): Promise<{ token: s
     body: JSON.stringify({ email, password })
   })
   
-  if (!response.ok) throw new Error('Credenciales inválidas')
+  if (!response.ok) {
+    const data = await response.json()
+    throw new Error(data.error || 'Error al iniciar sesión')
+  }
   
   return response.json()
 }
